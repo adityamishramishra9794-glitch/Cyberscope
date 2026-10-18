@@ -70,14 +70,15 @@ class ScanView(QWidget):
         self.checks: dict[str, QCheckBox] = {}
         for key, label, tip in CHECKS:
             cb = QCheckBox(label)
-            cb.setChecked(True)
+            cb.setChecked(key not in ("curl_tool", "nmap_tool"))
             cb.setToolTip(tip)
             self.checks[key] = cb
             lay3.addWidget(cb)
         btn_default = QPushButton("Reset to safe default profile")
         btn_default.setObjectName("secondary")
-        btn_default.setToolTip("Enables all checks. Every check is passive and non-destructive.")
-        btn_default.clicked.connect(lambda: [c.setChecked(True) for c in self.checks.values()])
+        btn_default.setToolTip("Enables standard safe checks. Optional external tools stay off until you select them.")
+        btn_default.clicked.connect(lambda: [c.setChecked(k not in ("curl_tool", "nmap_tool"))
+                                              for k, c in self.checks.items()])
         lay3.addWidget(btn_default)
         root.addWidget(box3)
 

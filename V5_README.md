@@ -39,3 +39,14 @@ The signal module uses the Python standard library and `curl` if installed. Exis
 - It performs one baseline and one single-quote comparison per parameter with delays.
 - It does not test POST/JSON bodies, authentication workflows, second-order SQLi, blind SQLi, or database contents.
 - False negatives are possible; false positives are possible.
+
+
+## Optional external-tool integrations (wired into the scan GUI)
+
+The New Scan page now includes two **opt-in** checkboxes:
+- **curl diagnostics**: makes one bounded request to the normalized target URL, does not follow redirects, and records HTTP status + elapsed time.
+- **Nmap top-20 ports**: runs a TCP connect scan against the 20 most common TCP ports, with low timing, one retry, and a 35-second host timeout. Nmap scripts, version detection, OS detection, UDP scanning, and broad port ranges are not enabled.
+
+These options are unchecked by default and require the same authorization confirmation and exact-host allowlist as the rest of the scan. Their results are saved as informational observations in the normal scan report. The app will report a skipped/incomplete check if the executable is missing.
+
+The installed `sqlmap` executable is **not launched by this integration**. The existing `v5/sqli_signals.py` is a conservative, separate SQL-injection signal helper; it is not equivalent to sqlmap and is not automatically invoked by the scan pipeline.

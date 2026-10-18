@@ -19,6 +19,8 @@ CHECKS = [
     ("cookies", "Cookie attributes", "Checks Secure/HttpOnly/SameSite flags. Cookie values are never stored."),
     ("metadata", "Public metadata files", "Fetches only /robots.txt, /sitemap.xml and /.well-known/security.txt."),
     ("technology", "Technology indicators", "Reads server/technology hints from ordinary responses."),
+    ("curl_tool", "curl diagnostics (optional)", "Uses installed curl for one bounded request; does not follow redirects."),
+    ("nmap_tool", "Nmap top-20 ports (optional)", "Low-rate TCP connect scan of the top 20 ports; only for explicitly authorized targets."),
 ]
 
 
@@ -37,7 +39,8 @@ class ScanConfig:
 
     @classmethod
     def safe_default(cls, authorized: bool = False) -> "ScanConfig":
-        return cls(checks={k: True for k, _, _ in CHECKS}, authorization_confirmed=authorized)
+        return cls(checks={k: k not in ("curl_tool", "nmap_tool") for k, _, _ in CHECKS},
+                   authorization_confirmed=authorized)
 
     def enabled(self, key: str) -> bool:
         return bool(self.checks.get(key, False))
